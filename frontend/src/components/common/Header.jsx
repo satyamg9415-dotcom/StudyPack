@@ -59,7 +59,7 @@ export default function Header({ onMenuClick }) {
               ? 'Backend API Ready'
               : backendStatus === 'connecting'
               ? 'Checking API...'
-              : 'API Offline (8000)'}
+              : 'API Offline'}
           </span>
           <RefreshCw className="w-3 h-3 text-slate-400 hover:text-slate-600" />
         </button>

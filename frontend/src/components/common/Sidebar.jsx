@@ -156,7 +156,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   />
                   <span className="text-[11px] text-slate-500">
                     {backendStatus === 'connected'
-                      ? 'Port 8000 Live'
+                      ? 'API Online'
                       : backendStatus === 'connecting'
                       ? 'Connecting...'
                       : 'Offline'}

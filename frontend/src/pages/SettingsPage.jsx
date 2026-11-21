@@ -11,7 +11,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useStudyPack } from '../context/StudyPackContext';
-import { testGeminiPrompt } from '../api/client';
+import { testGeminiPrompt, API_BASE_URL } from '../api/client';
 
 export default function SettingsPage() {
   const { settings, updateSettings, backendHealth, backendStatus, refreshHealth } =
@@ -294,14 +294,14 @@ export default function SettingsPage() {
                   backendStatus === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
                 }`}
               />
-              {backendStatus === 'connected' ? 'Connected (Port 8000)' : 'Offline'}
+              {backendStatus === 'connected' ? 'Connected' : 'Offline'}
             </span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
             <span className="text-slate-400 block font-medium">API Endpoint</span>
-            <span className="font-semibold text-slate-700 mt-1 block font-mono">
-              http://localhost:8000/api
+            <span className="font-semibold text-slate-700 mt-1 block font-mono break-all">
+              {API_BASE_URL}
             </span>
           </div>
 

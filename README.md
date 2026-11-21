@@ -91,27 +91,6 @@ StudyPack AI/
 └── README.md
 ```
 
----
-
-## 📋 Module Status Table
-
-Every module has been rigorously verified through unit and integration testing.
-
-| Module Name | Functionality | Status | Known Issues |
-|---|---|---|---|
-| **Document Ingestion & Parsing** | Extraction of raw text and metadata from PDF (`pymupdf`), PPTX (`python-pptx`), and TXT. Validates MIME types, rejects 0-byte/empty files and unsupported extensions. | **Working** | None. Tested with multi-page PDFs, slide decks, and plain text files. |
-| **P01: Lecture Summarizer** | Generates title, high-level overview, chapter-wise summaries, deep explanations, and key takeaways using structured Pydantic schemas. | **Working** | None. Automatically breaks down both short and lengthy (>30k chars) notes. |
-| **P02: Key Terms Extraction** | Identifies technical terms, clear definitions, contextual usage, and importance levels (High/Medium/Low). Displayed in expandable cards. | **Working** | None. Fully validated against structured JSON schema. |
-| **P03: Practice Question Generator** | Balanced mix of short-answer, conceptual, long-answer, and application questions with verified reference answers. | **Working** | None. Model answers are collapsible in the UI to facilitate active recall. |
-| **P04: AI Quiz Generator** | Generates 4-option MCQs with single correct key and rationale. | **Working** | None. |
-| **P05: Adaptive Difficulty Quiz** | Adjusts cognitive difficulty (Easy: definitions; Medium: concepts & relationships; Hard: multi-step reasoning & application). | **Working** | None. Seamlessly integrated into the interactive Quiz Engine. |
-| **P06: Answer Evaluator** | Strict university examiner rubric assessing free-form student answers on a 10-point scale across 5 criteria. Highlights misconceptions and suggests improved answers. | **Working** | None. Real-time evaluation with interactive scorecards. |
-| **Interactive Quiz Engine** | Step-by-step quiz navigation, progress bar, real-time option selection, final score calculation, and review mode. | **Working** | None. Robustly handles both `correct_option_id` and legacy `correct_answer` fields. |
-| **PDF Export Engine** | ReportLab generation of formatted study packs including running headers/footers, overview, chapters, glossary, questions, and quiz scores. | **Working** | None. Generated PDFs conform to PDF-1.4 standard and stream as file downloads. |
-| **Frontend State & Navigation** | Tabbed workspace preserving state across navigation, loading spinners for background tasks, and error alerts. | **Working** | None. Built with React 19 and Tailwind CSS. |
-| **API Security & Key Isolation** | Isolates Google Gemini API key to backend runtime environment. Health check never leaks credentials. | **Working** | None. Verified by automated security test. |
-
----
 
 ## ⚙️ Installation & Configuration
 

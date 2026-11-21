@@ -237,6 +237,31 @@ class GeminiService:
             logger.error(f"Failed to initialize Google Gen AI Client: {e}")
             self.client = None
 
+    def _clean_model_name(self, model: Optional[str]) -> str:
+        """Cleans model name by removing quotes, whitespace, and 'models/' prefix."""
+        m = (model or "").strip().strip('"').strip("'")
+        if m.startswith("models/"):
+            m = m[7:]
+        return m
+
+    def _get_candidate_models(self) -> List[str]:
+        """Returns valid Google Gemini models to try in order."""
+        preferred = self._clean_model_name(self.model_name)
+        # Standard verified Google Gemini model identifiers
+        standard_models = [
+            "gemini-2.0-flash",
+            "gemini-1.5-flash",
+            "gemini-2.5-flash",
+            "gemini-1.5-pro",
+        ]
+        candidates = []
+        if preferred and not preferred.startswith("gemini-3."):
+            candidates.append(preferred)
+        for m in standard_models:
+            if m not in candidates:
+                candidates.append(m)
+        return candidates
+
     def _ensure_client_ready(self):
         if not settings.is_gemini_configured:
             raise ValueError(
@@ -277,16 +302,7 @@ class GeminiService:
         """Sends a text prompt to Gemini API and returns the generated content."""
         self._ensure_client_ready()
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -298,9 +314,9 @@ class GeminiService:
                     return response.text.strip()
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code}, attempting fallback model..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}), attempting fallback..."
                     )
                     continue
                 raise
@@ -342,16 +358,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -365,9 +372,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during summary generation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during summary generation, trying fallback..."
                     )
                     continue
                 raise
@@ -428,16 +435,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -451,9 +449,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during key terms generation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during key terms generation, trying fallback..."
                     )
                     continue
                 raise
@@ -516,16 +514,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -539,9 +528,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during questions generation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during questions generation, trying fallback..."
                     )
                     continue
                 raise
@@ -604,16 +593,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -631,9 +611,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during quiz generation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during quiz generation, trying fallback..."
                     )
                     continue
                 raise
@@ -694,16 +674,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -720,9 +691,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during adaptive quiz generation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during adaptive quiz generation, trying fallback..."
                     )
                     continue
                 raise
@@ -795,16 +766,7 @@ class GeminiService:
             system_instruction=system_prompt,
         )
 
-        candidate_models = [self.model_name]
-        for fallback in [
-            "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.6-flash",
-        ]:
-            if fallback not in candidate_models:
-                candidate_models.append(fallback)
-
+        candidate_models = self._get_candidate_models()
         last_error = None
         for model in candidate_models:
             try:
@@ -820,9 +782,9 @@ class GeminiService:
                     return parsed
             except errors.ClientError as ce:
                 last_error = ce
-                if ce.code in (404, 503):
+                if ce.code in (400, 404, 503):
                     logger.warning(
-                        f"Model {model} returned {ce.code} during answer evaluation, trying fallback..."
+                        f"Model {model} returned {ce.code} ({getattr(ce, 'message', str(ce))}) during answer evaluation, trying fallback..."
                     )
                     continue
                 raise

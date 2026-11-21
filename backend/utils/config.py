@@ -20,7 +20,7 @@ class Settings:
 
     # Gemini API Settings (Read strictly from backend .env)
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "").strip()
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite").strip()
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash").strip().strip('"').strip("'")
 
     # CORS Configuration
     CORS_ORIGINS_RAW: str = os.getenv(

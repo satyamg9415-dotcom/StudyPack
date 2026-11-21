@@ -1,0 +1,9 @@
+PHY 420: Principles of Quantum Computing
+Lecture 3: Qubits, Superposition, and Quantum Entanglement
+
+1. The Qubit and Bloch Sphere
+A classical bit resides in state 0 or 1. A quantum bit (qubit) exists as a linear superposition: |psi> = alpha|0> + beta|1>, where alpha and beta are complex probability amplitudes satisfying |alpha|^2 + |beta|^2 = 1.
+Measurement collapses the superposition onto the computational basis.
+
+2. Quantum Entanglement
+Two or more qubits are entangled when the quantum state of the system cannot be factored as a product of individual states. For Bell state |Phi+> = (|00> + |11>) / sqrt(2), measuring the first qubit instantaneously dictates the measurement outcome of the second qubit regardless of physical separation.
